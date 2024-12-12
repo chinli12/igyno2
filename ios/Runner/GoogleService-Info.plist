@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyChlFXCjjaeAoRiPPb3051cg1_StuLlqH0</string>
+	<string>AIzaSyAGiB-Nz4YSoy00rt-7_3w12-1_QG98r9c</string>
 	<key>GCM_SENDER_ID</key>
-	<string>59988971110</string>
+	<string>938272782215</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.myapp.gyno</string>
+	<string>com.mycompany.igyno</string>
 	<key>PROJECT_ID</key>
-	<string>tenatest-b4d38</string>
+	<string>scale360-b0a54</string>
 	<key>STORAGE_BUCKET</key>
-	<string>tenatest-b4d38.appspot.com</string>
+	<string>scale360-b0a54.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:59988971110:ios:aebb4b65fae3bc32f667a7</string>
+	<string>1:938272782215:ios:3c1fed69e52b685d5b0522</string>
 </dict>
 </plist>

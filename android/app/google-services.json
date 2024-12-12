@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "59988971110",
-    "project_id": "tenatest-b4d38",
-    "storage_bucket": "tenatest-b4d38.appspot.com"
+    "project_number": "938272782215",
+    "project_id": "scale360-b0a54",
+    "storage_bucket": "scale360-b0a54.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:59988971110:android:c3406479ed351686f667a7",
+        "mobilesdk_app_id": "1:938272782215:android:e365f325a8d232125b0522",
         "android_client_info": {
-          "package_name": "com.example.gyno"
+          "package_name": "com.mycompany.disputeai"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA3wj3XdOR414GK13QgXvHTD6QkxpDg-Qk"
+          "current_key": "AIzaSyBz_VdR64lzdNhi1Vgm62Ci1P181qcQc9Q"
         }
       ],
       "services": {
@@ -26,34 +26,15 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:59988971110:android:1fd6b25d61123f4df667a7",
+        "mobilesdk_app_id": "1:938272782215:android:563bfca28f62d0c15b0522",
         "android_client_info": {
-          "package_name": "com.myapp.gyno"
+          "package_name": "com.mycompany.igyno"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyA3wj3XdOR414GK13QgXvHTD6QkxpDg-Qk"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:59988971110:android:7ead51a6b632d76bf667a7",
-        "android_client_info": {
-          "package_name": "com.themonarchrose.tenants"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyA3wj3XdOR414GK13QgXvHTD6QkxpDg-Qk"
+          "current_key": "AIzaSyBz_VdR64lzdNhi1Vgm62Ci1P181qcQc9Q"
         }
       ],
       "services": {

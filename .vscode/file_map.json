@@ -1,0 +1,26 @@
+{
+  "period_trends_chart.dart": {
+    "old_identifier_name": "PeriodTrendsChart",
+    "new_identifier_name": "PeriodTrendsChart",
+    "type": "W",
+    "is_deleted": false,
+    "current_checksum": "d4ad7a1962f2752b553541ee2d93108567a074132267ff82b0672a541e5ee901",
+    "original_checksum": "d4ad7a1962f2752b553541ee2d93108567a074132267ff82b0672a541e5ee901"
+  },
+  "custom_functions.dart": {
+    "old_identifier_name": "CustomFunctions",
+    "new_identifier_name": "CustomFunctions",
+    "type": "F",
+    "is_deleted": false,
+    "current_checksum": "7395b2cb38e2d0ba0c1c18a5cf67b56f8d57ec01b9439d3b1bfb47744e4ee43b",
+    "original_checksum": "7395b2cb38e2d0ba0c1c18a5cf67b56f8d57ec01b9439d3b1bfb47744e4ee43b"
+  },
+  "pubspec.yaml": {
+    "old_identifier_name": "pubspec.yaml",
+    "new_identifier_name": "pubspec.yaml",
+    "type": "D",
+    "is_deleted": false,
+    "current_checksum": "6c39a82c62a0151b757bb5bf795fb3dd9aff154d5780539de41770e900013112",
+    "original_checksum": "6c39a82c62a0151b757bb5bf795fb3dd9aff154d5780539de41770e900013112"
+  }
+}
