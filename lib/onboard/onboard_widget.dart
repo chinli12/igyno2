@@ -7,6 +7,7 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/flutter_flow/form_field_controller.dart';
 import '/flutter_flow/upload_data.dart';
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,7 @@ import 'onboard_model.dart';
 export 'onboard_model.dart';
 
 class OnboardWidget extends StatefulWidget {
-  /// create an onboarding screen, include all the information nedded for period
-  /// tracking app, both health, wieght, hight and others that are important
+  /// This is an onbaording screen
   const OnboardWidget({super.key});
 
   @override
@@ -48,6 +48,8 @@ class _OnboardWidgetState extends State<OnboardWidget> {
 
     _model.perioddurationTextController ??= TextEditingController();
     _model.perioddurationFocusNode ??= FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -142,6 +144,7 @@ class _OnboardWidgetState extends State<OnboardWidget> {
                                             fontFamily: 'Inter Tight',
                                             color: FlutterFlowTheme.of(context)
                                                 .primaryText,
+                                            fontSize: 18.0,
                                             letterSpacing: 0.0,
                                           ),
                                     ),
@@ -292,6 +295,7 @@ class _OnboardWidgetState extends State<OnboardWidget> {
                                             fontFamily: 'Inter Tight',
                                             color: FlutterFlowTheme.of(context)
                                                 .primaryText,
+                                            fontSize: 18.0,
                                             letterSpacing: 0.0,
                                           ),
                                     ),
@@ -569,6 +573,7 @@ class _OnboardWidgetState extends State<OnboardWidget> {
                                             fontFamily: 'Inter Tight',
                                             color: FlutterFlowTheme.of(context)
                                                 .primaryText,
+                                            fontSize: 18.0,
                                             letterSpacing: 0.0,
                                           ),
                                     ),
@@ -844,6 +849,7 @@ class _OnboardWidgetState extends State<OnboardWidget> {
                                             fontFamily: 'Inter Tight',
                                             color: FlutterFlowTheme.of(context)
                                                 .primaryText,
+                                            fontSize: 18.0,
                                             letterSpacing: 0.0,
                                           ),
                                     ),
@@ -886,7 +892,9 @@ class _OnboardWidgetState extends State<OnboardWidget> {
                                             BorderRadius.circular(20.0),
                                       ),
                                       unselectedChipStyle: ChipStyle(
-                                        backgroundColor: Color(0xFFFFF0F5),
+                                        backgroundColor:
+                                            FlutterFlowTheme.of(context)
+                                                .primaryBackground,
                                         textStyle: FlutterFlowTheme.of(context)
                                             .bodySmall
                                             .override(
@@ -944,6 +952,7 @@ class _OnboardWidgetState extends State<OnboardWidget> {
                                             fontFamily: 'Inter Tight',
                                             color: FlutterFlowTheme.of(context)
                                                 .primaryText,
+                                            fontSize: 18.0,
                                             letterSpacing: 0.0,
                                           ),
                                     ),
@@ -985,7 +994,9 @@ class _OnboardWidgetState extends State<OnboardWidget> {
                                             BorderRadius.circular(20.0),
                                       ),
                                       unselectedChipStyle: ChipStyle(
-                                        backgroundColor: Color(0xFFFFF0F5),
+                                        backgroundColor:
+                                            FlutterFlowTheme.of(context)
+                                                .primaryBackground,
                                         textStyle: FlutterFlowTheme.of(context)
                                             .bodySmall
                                             .override(
@@ -1043,6 +1054,7 @@ class _OnboardWidgetState extends State<OnboardWidget> {
                                             fontFamily: 'Inter Tight',
                                             color: FlutterFlowTheme.of(context)
                                                 .primaryText,
+                                            fontSize: 18.0,
                                             letterSpacing: 0.0,
                                           ),
                                     ),
@@ -1083,7 +1095,9 @@ class _OnboardWidgetState extends State<OnboardWidget> {
                                             BorderRadius.circular(20.0),
                                       ),
                                       unselectedChipStyle: ChipStyle(
-                                        backgroundColor: Color(0xFFFFF0F5),
+                                        backgroundColor:
+                                            FlutterFlowTheme.of(context)
+                                                .primaryBackground,
                                         textStyle: FlutterFlowTheme.of(context)
                                             .bodySmall
                                             .override(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import '../cloud_functions/cloud_functions.dart';
 import '../schema/structs/index.dart';
 
 import 'package:flutter/foundation.dart';
@@ -30,7 +31,7 @@ class TipCall {
   }) async {
     final ffApiRequestBody = '''
 {
-  "model": "gpt-4o",
+  "model": "gpt-4o-2024-08-06",
   "messages": [
     {
       "role": "system",
@@ -83,7 +84,8 @@ class TipCall {
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer',
+        'Authorization':
+            'Bearer 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',
       },
       params: {},
       body: ffApiRequestBody,
@@ -109,7 +111,7 @@ class ChatCall {
   }) async {
     final ffApiRequestBody = '''
 {
-  "model": "gpt-4o-2024-08-06",
+  "model": "gpt-3.5-turbo",
   "messages": [
     {
       "role": "system",
@@ -127,7 +129,8 @@ class ChatCall {
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer',
+        'Authorization':
+            'Bearer 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',
       },
       params: {},
       body: ffApiRequestBody,
@@ -162,18 +165,18 @@ class ChatImageCall {
     },
     {
       "role": "user",
-      "content":[
-          {
-            "type": "text",
-            "text": "What is in this image?"
-          },
-          {
-            "type": "image_url",
-            "image_url": {
-              "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"
-            }
+      "content": [
+        {
+          "type": "text",
+          "text": "${escapeStringForJson(input)}"
+        },
+        {
+          "type": "image_url",
+          "image_url": {
+            "url": "${escapeStringForJson(image)}"
           }
-        ]
+        }
+      ]
     }
   ]
 }''';
@@ -183,7 +186,8 @@ class ChatImageCall {
       callType: ApiCallType.POST,
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Beare',
+        'Authorization':
+            'Bearer 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',
       },
       params: {},
       body: ffApiRequestBody,
@@ -200,6 +204,247 @@ class ChatImageCall {
   static String? message(dynamic response) => castToType<String>(getJsonField(
         response,
         r'''$.choices[:].message.content''',
+      ));
+}
+
+class StreamCall {
+  static Future<ApiCallResponse> call({
+    String? url = '',
+    String? presenterId = '',
+  }) async {
+    final response = await makeCloudCall(
+      _kPrivateApiFunctionName,
+      {
+        'callName': 'StreamCall',
+        'variables': {
+          'url': url,
+          'presenterId': presenterId,
+        },
+      },
+    );
+    return ApiCallResponse.fromCloudCallResponse(response);
+  }
+
+  static String? streaminid(dynamic response) =>
+      castToType<String>(getJsonField(
+        response,
+        r'''$.id''',
+      ));
+  static String? sdp(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.offer.sdp''',
+      ));
+  static List? iceserver(dynamic response) => getJsonField(
+        response,
+        r'''$.ice_servers''',
+        true,
+      ) as List?;
+  static List<String>? iceserverUrl(dynamic response) => (getJsonField(
+        response,
+        r'''$.ice_servers[:].urls''',
+        true,
+      ) as List?)
+          ?.withoutNulls
+          .map((x) => castToType<String>(x))
+          .withoutNulls
+          .toList();
+  static String? sessionID(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.session_id''',
+      ));
+  static dynamic? offer(dynamic response) => getJsonField(
+        response,
+        r'''$.offer''',
+      );
+}
+
+class SdpCall {
+  static Future<ApiCallResponse> call({
+    String? streamID = '',
+    String? sdp = '',
+    String? sessionId = '',
+  }) async {
+    final response = await makeCloudCall(
+      _kPrivateApiFunctionName,
+      {
+        'callName': 'SdpCall',
+        'variables': {
+          'streamID': streamID,
+          'sdp': sdp,
+          'sessionId': sessionId,
+        },
+      },
+    );
+    return ApiCallResponse.fromCloudCallResponse(response);
+  }
+}
+
+class NetworkCall {
+  static Future<ApiCallResponse> call({
+    String? candidate = '',
+    String? sdpMid = '',
+    String? sessionId = '',
+    double? sdpMLineIndex,
+    String? stremID = '',
+  }) async {
+    final response = await makeCloudCall(
+      _kPrivateApiFunctionName,
+      {
+        'callName': 'NetworkCall',
+        'variables': {
+          'candidate': candidate,
+          'sdpMid': sdpMid,
+          'sessionId': sessionId,
+          'sdpMLineIndex': sdpMLineIndex,
+          'stremID': stremID,
+        },
+      },
+    );
+    return ApiCallResponse.fromCloudCallResponse(response);
+  }
+}
+
+class AgentCall {
+  static Future<ApiCallResponse> call() async {
+    final response = await makeCloudCall(
+      _kPrivateApiFunctionName,
+      {
+        'callName': 'AgentCall',
+        'variables': {},
+      },
+    );
+    return ApiCallResponse.fromCloudCallResponse(response);
+  }
+}
+
+class StreamchatCall {
+  static Future<ApiCallResponse> call({
+    String? chatId = '',
+    String? agentId = '',
+    String? streamId = '',
+    String? sessionId = '',
+    String? inpute = '',
+    String? createdat = '',
+  }) async {
+    final response = await makeCloudCall(
+      _kPrivateApiFunctionName,
+      {
+        'callName': 'StreamchatCall',
+        'variables': {
+          'chatId': chatId,
+          'agentId': agentId,
+          'streamId': streamId,
+          'sessionId': sessionId,
+          'inpute': inpute,
+          'createdat': createdat,
+        },
+      },
+    );
+    return ApiCallResponse.fromCloudCallResponse(response);
+  }
+}
+
+class CreatechatCall {
+  static Future<ApiCallResponse> call({
+    String? agentId = '',
+  }) async {
+    final response = await makeCloudCall(
+      _kPrivateApiFunctionName,
+      {
+        'callName': 'CreatechatCall',
+        'variables': {
+          'agentId': agentId,
+        },
+      },
+    );
+    return ApiCallResponse.fromCloudCallResponse(response);
+  }
+}
+
+class VideCall {
+  static Future<ApiCallResponse> call({
+    String? input = '',
+  }) async {
+    final ffApiRequestBody = '''
+{
+  "presenter_id": "amy-Aq6OmGZnMt",
+  "script": {
+    "type": "text",
+    "subtitles": "false",
+    "provider": {
+      "type": "microsoft",
+      "voice_id": "Sara"
+    },
+    "input": "${escapeStringForJson(input)}",
+    "ssml": "false"
+  },
+  "config": {
+    "result_format": "mp4"
+  },
+  "presenter_config": {
+    "crop": {
+      "type": "wide"
+    }
+  }
+}''';
+    return ApiManager.instance.makeApiCall(
+      callName: 'vide',
+      apiUrl: 'https://api.d-id.com/clips',
+      callType: ApiCallType.POST,
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization':
+            'Basic YjJ0aFptOXlZMmhwWW5WNmIzSTJPREJBWjIxaGFXd3VZMjl0Om1xZmNjckNzejRmRHB1UThZX1lRMw==',
+        'accept': 'application/json',
+      },
+      params: {},
+      body: ffApiRequestBody,
+      bodyType: BodyType.JSON,
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static String? id(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.id''',
+      ));
+}
+
+class GetvideoCall {
+  static Future<ApiCallResponse> call({
+    String? id = '',
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'getvideo',
+      apiUrl: 'https://api.d-id.com/clips/${id}',
+      callType: ApiCallType.GET,
+      headers: {
+        'authorization':
+            'Basic YjJ0aFptOXlZMmhwWW5WNmIzSTJPREJBWjIxaGFXd3VZMjl0Om1xZmNjckNzejRmRHB1UThZX1lRMw==',
+        'accept': 'application/json',
+      },
+      params: {},
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+
+  static String? status(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.status''',
+      ));
+  static String? url(dynamic response) => castToType<String>(getJsonField(
+        response,
+        r'''$.result_url''',
       ));
 }
 

@@ -108,15 +108,15 @@ String getCyclePhase(
   DateTime startPeriod,
   int cycleLength,
   DateTime currentDate,
+  int periodLength,
 ) {
   currentDate ??= DateTime.now();
 
-  // Calculate the length of each phase
-  const int follicularPhaseLength = 13; // Days before ovulation (approx)
+  // Calculate the lengths of the phases
+  int menstrualPhaseLength = periodLength; // Use the provided period length
+  int follicularPhaseLength = cycleLength - periodLength - 14; // Dynamic length
   const int lutealPhaseLength = 14; // Fixed length after ovulation
-  const int ovulationLength = 1; // Ovulation is a single day
-  int menstrualPhaseLength =
-      cycleLength - follicularPhaseLength - lutealPhaseLength;
+  const int ovulationLength = 1; // Ovulation lasts one day
 
   // Define phase boundaries
   DateTime menstrualStart = startPeriod;
@@ -125,11 +125,13 @@ String getCyclePhase(
 
   DateTime follicularStart = menstrualEnd.add(Duration(days: 1));
   DateTime follicularEnd =
-      startPeriod.add(Duration(days: follicularPhaseLength - 1));
+      follicularStart.add(Duration(days: follicularPhaseLength - 1));
 
-  DateTime ovulationDay = follicularEnd.add(Duration(days: 1));
+  DateTime ovulationStart = follicularEnd.add(Duration(days: 1));
+  DateTime ovulationEnd =
+      ovulationStart.add(Duration(days: ovulationLength - 1));
 
-  DateTime lutealStart = ovulationDay.add(Duration(days: 1));
+  DateTime lutealStart = ovulationEnd.add(Duration(days: 1));
   DateTime lutealEnd = startPeriod.add(Duration(days: cycleLength - 1));
 
   // Determine the current phase
@@ -141,7 +143,9 @@ String getCyclePhase(
       (currentDate.isAfter(follicularStart) &&
           currentDate.isBefore(follicularEnd.add(Duration(days: 1))))) {
     return "Follicular";
-  } else if (currentDate.isAtSameMomentAs(ovulationDay)) {
+  } else if (currentDate.isAtSameMomentAs(ovulationStart) ||
+      (currentDate.isAfter(ovulationStart) &&
+          currentDate.isBefore(ovulationEnd.add(Duration(days: 1))))) {
     return "Ovulation";
   } else if (currentDate.isAtSameMomentAs(lutealStart) ||
       (currentDate.isAfter(lutealStart) &&
@@ -230,6 +234,69 @@ String calculateOvulationWindow(
   } else {
     return "Ovulation window has ended";
   }
+}
+
+List<CalendarStruct> getCalendar2(
+  DateTime? firstDayPeriod,
+  int? periodLength,
+  int? cycleLength,
+  DateTime inputDate,
+) {
+  // Constants for ovulation and fertile window calculation
+  const int ovulationDayOffset = 14;
+  const int fertileWindowStartOffset = 10;
+  const int fertileWindowEndOffset = 15;
+
+  DateTime startOfMonth = DateTime(inputDate.year, inputDate.month,
+      1); // Use inputDate to determine the calendar month
+  DateTime endOfMonth = DateTime(inputDate.year, inputDate.month + 1, 0);
+
+  // Adjust start day to Monday
+  DateTime calendarStartDay = startOfMonth;
+  if (startOfMonth.weekday != DateTime.monday) {
+    calendarStartDay =
+        startOfMonth.subtract(Duration(days: startOfMonth.weekday - 1));
+  }
+
+  // Adjust end day to Sunday
+  DateTime calendarEndDay = endOfMonth;
+  if (endOfMonth.weekday != DateTime.sunday) {
+    calendarEndDay = endOfMonth.add(Duration(days: 7 - endOfMonth.weekday));
+  }
+
+  // Calculate ovulation day and fertile window
+  DateTime ovulationDay =
+      firstDayPeriod!.add(Duration(days: ovulationDayOffset));
+  DateTime fertileWindowStart =
+      firstDayPeriod.add(Duration(days: fertileWindowStartOffset));
+  DateTime fertileWindowEnd =
+      firstDayPeriod.add(Duration(days: fertileWindowEndOffset));
+
+  // Calculate the end of the period
+  DateTime lastDayPeriod =
+      firstDayPeriod.add(Duration(days: periodLength! - 1));
+
+  // Generate the calendar
+  List<CalendarStruct> calendar = [];
+  DateTime currentDate = calendarStartDay;
+
+  while (currentDate.isBefore(calendarEndDay.add(Duration(days: 1)))) {
+    calendar.add(CalendarStruct(
+      calendarDay: currentDate,
+      isPreviousDay: currentDate.isBefore(startOfMonth),
+      isNextMonth: currentDate.isAfter(endOfMonth),
+      isInFertileWindow:
+          currentDate.isAfter(fertileWindowStart.subtract(Duration(days: 1))) &&
+              currentDate.isBefore(fertileWindowEnd.add(Duration(days: 1))),
+      isInOvulation: currentDate.isAtSameMomentAs(ovulationDay),
+      isInPeriod:
+          currentDate.isAfter(firstDayPeriod.subtract(Duration(days: 1))) &&
+              currentDate.isBefore(lastDayPeriod.add(Duration(days: 1))),
+    ));
+    currentDate = currentDate.add(Duration(days: 1));
+  }
+
+  return calendar;
 }
 
 String calculateFertileWindow(
@@ -335,4 +402,11 @@ String getList(List<String> lis) {
   // write a function that return a list of input
   // Join the list items with commas and return the result
   return result;
+}
+
+DateTime formatdate() {
+  final DateTime now = DateTime.now();
+  final DateTime sixMonthsAgo = now.subtract(const Duration(days: 180));
+  DateTime time = sixMonthsAgo;
+  return time;
 }

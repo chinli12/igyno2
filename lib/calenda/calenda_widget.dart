@@ -4,6 +4,7 @@ import '/components/perioddate_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'dart:ui';
 import '/flutter_flow/custom_functions.dart' as functions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -13,8 +14,8 @@ import 'calenda_model.dart';
 export 'calenda_model.dart';
 
 class CalendaWidget extends StatefulWidget {
-  /// Create a page with calender view to see the period timframe and calender,
-  /// make it modern and good UI/UX
+  /// a page with calender view to see the period timframe and calender, make it
+  /// modern and good UI/UX
   const CalendaWidget({super.key});
 
   @override
@@ -36,6 +37,8 @@ class _CalendaWidgetState extends State<CalendaWidget> {
       _model.inputedate = getCurrentTimestamp;
       safeSetState(() {});
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -76,7 +79,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                 ),
                 child: Padding(
                   padding:
-                      EdgeInsetsDirectional.fromSTEB(24.0, 35.0, 24.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(24.0, 35.0, 24.0, 20.0),
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -90,15 +93,25 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Calendar',
-                                  style: FlutterFlowTheme.of(context)
-                                      .headlineMedium
-                                      .override(
-                                        fontFamily: 'Inter Tight',
-                                        color: Colors.white,
-                                        letterSpacing: 0.0,
-                                      ),
+                                InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    context.pushNamed('Aichat');
+                                  },
+                                  child: Text(
+                                    'Calendar',
+                                    style: FlutterFlowTheme.of(context)
+                                        .headlineMedium
+                                        .override(
+                                          fontFamily: 'Inter Tight',
+                                          color: Colors.white,
+                                          fontSize: 20.0,
+                                          letterSpacing: 0.0,
+                                        ),
+                                  ),
                                 ),
                                 Text(
                                   'Track your cycle and fertile days',
@@ -119,13 +132,18 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                 color: Color(0x33FFFFFF),
                                 borderRadius: BorderRadius.circular(25.0),
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(25.0),
-                                child: Image.network(
-                                  'https://images.unsplash.com/photo-1531369555007-dc0d507ee53f?w=500&h=500',
-                                  width: 50.0,
-                                  height: 50.0,
-                                  fit: BoxFit.cover,
+                              child: AuthUserStreamWidget(
+                                builder: (context) => ClipRRect(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  child: Image.network(
+                                    currentUserPhoto != null &&
+                                            currentUserPhoto != ''
+                                        ? currentUserPhoto
+                                        : 'https://images.unsplash.com/photo-1531369555007-dc0d507ee53f?w=500&h=500',
+                                    width: 40.0,
+                                    height: 40.0,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
@@ -146,7 +164,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                             ),
                             child: Padding(
                               padding: EdgeInsetsDirectional.fromSTEB(
-                                  20.0, 20.0, 20.0, 20.0),
+                                  5.0, 20.0, 5.0, 20.0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -164,6 +182,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                               color:
                                                   FlutterFlowTheme.of(context)
                                                       .primaryText,
+                                              fontSize: 18.0,
                                               letterSpacing: 0.0,
                                             ),
                                       ),
@@ -209,7 +228,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                     ],
                                   ),
                                   Wrap(
-                                    spacing: 16.0,
+                                    spacing: 14.0,
                                     runSpacing: 16.0,
                                     alignment: WrapAlignment.start,
                                     crossAxisAlignment:
@@ -219,89 +238,135 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                     verticalDirection: VerticalDirection.down,
                                     clipBehavior: Clip.none,
                                     children: [
-                                      Text(
-                                        'Mon',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              fontFamily: 'Inter',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
+                                      Container(
+                                        decoration: BoxDecoration(),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  7.0, 7.0, 7.0, 7.0),
+                                          child: Text(
+                                            'M',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
                                                       .secondaryText,
-                                              letterSpacing: 0.0,
-                                            ),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        'Tue',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              fontFamily: 'Inter',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
+                                      Container(
+                                        decoration: BoxDecoration(),
+                                        child: Padding(
+                                          padding:
+                                              EdgeInsetsDirectional.fromSTEB(
+                                                  10.0, 10.0, 10.0, 10.0),
+                                          child: Text(
+                                            'T',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
                                                       .secondaryText,
-                                              letterSpacing: 0.0,
-                                            ),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        'Wed',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              fontFamily: 'Inter',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
+                                      Container(
+                                        decoration: BoxDecoration(),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text(
+                                            'W',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
                                                       .secondaryText,
-                                              letterSpacing: 0.0,
-                                            ),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        'Thur',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              fontFamily: 'Inter',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
+                                      Container(
+                                        decoration: BoxDecoration(),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text(
+                                            'T',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
                                                       .secondaryText,
-                                              letterSpacing: 0.0,
-                                            ),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        'Fri',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              fontFamily: 'Inter',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
+                                      Container(
+                                        decoration: BoxDecoration(),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text(
+                                            'F',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
                                                       .secondaryText,
-                                              letterSpacing: 0.0,
-                                            ),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        'Sat',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              fontFamily: 'Inter',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
+                                      Container(
+                                        decoration: BoxDecoration(),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text(
+                                            'S',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
                                                       .secondaryText,
-                                              letterSpacing: 0.0,
-                                            ),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        'Sun',
-                                        style: FlutterFlowTheme.of(context)
-                                            .bodyMedium
-                                            .override(
-                                              fontFamily: 'Inter',
-                                              color:
-                                                  FlutterFlowTheme.of(context)
+                                      Container(
+                                        decoration: BoxDecoration(),
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10.0),
+                                          child: Text(
+                                            'S',
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
                                                       .secondaryText,
-                                              letterSpacing: 0.0,
-                                            ),
+                                                  letterSpacing: 0.0,
+                                                ),
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -324,7 +389,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                             .toList();
 
                                         return Wrap(
-                                          spacing: 0.0,
+                                          spacing: 14.0,
                                           runSpacing: 16.0,
                                           alignment: WrapAlignment.start,
                                           crossAxisAlignment:
@@ -337,63 +402,82 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                           children: List.generate(item.length,
                                               (itemIndex) {
                                             final itemItem = item[itemIndex];
-                                            return Container(
-                                              width: 40.0,
-                                              height: 40.0,
-                                              decoration: BoxDecoration(
-                                                color: () {
-                                                  if (itemItem
-                                                          .isInFertileWindow ==
-                                                      true) {
-                                                    return FlutterFlowTheme.of(
+                                            return InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                context.pushNamed(
+                                                  'Track',
+                                                  queryParameters: {
+                                                    'day': serializeParam(
+                                                      itemItem.calendarDay,
+                                                      ParamType.DateTime,
+                                                    ),
+                                                  }.withoutNulls,
+                                                );
+                                              },
+                                              child: Container(
+                                                width: 30.0,
+                                                height: 30.0,
+                                                decoration: BoxDecoration(
+                                                  color: () {
+                                                    if (itemItem
+                                                            .isInOvulation ==
+                                                        true) {
+                                                      return FlutterFlowTheme
+                                                              .of(context)
+                                                          .ovelation;
+                                                    } else if (itemItem
+                                                            .isInFertileWindow ==
+                                                        true) {
+                                                      return FlutterFlowTheme
+                                                              .of(context)
+                                                          .ovelation;
+                                                    } else if (itemItem
+                                                            .isInPeriod ==
+                                                        true) {
+                                                      return FlutterFlowTheme
+                                                              .of(context)
+                                                          .calendarperiod;
+                                                    } else {
+                                                      return Color(0x00000000);
+                                                    }
+                                                  }(),
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Align(
+                                                  alignment:
+                                                      AlignmentDirectional(
+                                                          0.0, 0.0),
+                                                  child: Text(
+                                                    dateTimeFormat(
+                                                        "d",
+                                                        dateTimeFromSecondsSinceEpoch(
+                                                            valueOrDefault<int>(
+                                                          itemItem.calendarDay
+                                                              ?.secondsSinceEpoch,
+                                                          0,
+                                                        ))),
+                                                    style: FlutterFlowTheme.of(
                                                             context)
-                                                        .ovelation;
-                                                  } else if (itemItem
-                                                          .isInOvulation ==
-                                                      true) {
-                                                    return FlutterFlowTheme.of(
-                                                            context)
-                                                        .ovelation;
-                                                  } else if (itemItem
-                                                          .isInPeriod ==
-                                                      true) {
-                                                    return FlutterFlowTheme.of(
-                                                            context)
-                                                        .calendarperiod;
-                                                  } else {
-                                                    return Color(0x00000000);
-                                                  }
-                                                }(),
-                                                borderRadius:
-                                                    BorderRadius.circular(20.0),
-                                              ),
-                                              child: Align(
-                                                alignment: AlignmentDirectional(
-                                                    0.0, 0.0),
-                                                child: Text(
-                                                  dateTimeFormat(
-                                                      "d",
-                                                      dateTimeFromSecondsSinceEpoch(
-                                                          valueOrDefault<int>(
-                                                        itemItem.calendarDay
-                                                            ?.secondsSinceEpoch,
-                                                        0,
-                                                      ))),
-                                                  style: FlutterFlowTheme.of(
-                                                          context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        color: itemItem
-                                                                    .isPreviousDay ||
-                                                                itemItem
-                                                                    .isNextMonth
-                                                            ? Color(0x2E57636C)
-                                                            : FlutterFlowTheme
-                                                                    .of(context)
-                                                                .secondaryText,
-                                                        letterSpacing: 0.0,
-                                                      ),
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          color: itemItem
+                                                                      .isInFertileWindow ||
+                                                                  itemItem
+                                                                      .isInOvulation
+                                                              ? Color(
+                                                                  0x2E57636C)
+                                                              : FlutterFlowTheme
+                                                                      .of(context)
+                                                                  .secondaryText,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                                  ),
                                                 ),
                                               ),
                                             );
@@ -432,6 +516,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                         .headlineSmall
                                         .override(
                                           fontFamily: 'Inter Tight',
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -522,6 +607,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                         .headlineSmall
                                         .override(
                                           fontFamily: 'Inter Tight',
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -556,6 +642,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                                   .override(
                                                     fontFamily: 'Inter Tight',
                                                     color: Color(0xFFFF69B4),
+                                                    fontSize: 16.0,
                                                     letterSpacing: 0.0,
                                                   ),
                                             ),
@@ -588,6 +675,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                                   .override(
                                                     fontFamily: 'Inter Tight',
                                                     color: Color(0xFFFF69B4),
+                                                    fontSize: 16.0,
                                                     letterSpacing: 0.0,
                                                   ),
                                             ),
@@ -633,6 +721,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                                   .override(
                                                     fontFamily: 'Inter Tight',
                                                     color: Color(0xFFFF69B4),
+                                                    fontSize: 16.0,
                                                     letterSpacing: 0.0,
                                                   ),
                                             ),
@@ -672,6 +761,7 @@ class _CalendaWidgetState extends State<CalendaWidget> {
                                                   .override(
                                                     fontFamily: 'Inter Tight',
                                                     color: Color(0xFF1565C0),
+                                                    fontSize: 16.0,
                                                     letterSpacing: 0.0,
                                                   ),
                                             ),

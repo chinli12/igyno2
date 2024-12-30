@@ -1,8 +1,16 @@
 import '/auth/firebase_auth/auth_util.dart';
+import '/backend/backend.dart';
+import '/backend/firebase_storage/storage.dart';
+import '/components/health_conditions_widget.dart';
+import '/components/lifestyle_habits_widget.dart';
+import '/components/personal_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/flutter_flow/upload_data.dart';
+import 'dart:ui';
 import '/flutter_flow/custom_functions.dart' as functions;
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -29,6 +37,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
     _model.switchValue1 = true;
     _model.switchValue2 = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -58,7 +67,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                 height: MediaQuery.sizeOf(context).height * 1.0,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFFFF69B4), Color(0xFFDA70D6)],
+                    colors: [
+                      FlutterFlowTheme.of(context).mainbg,
+                      Color(0xFFDA70D6)
+                    ],
                     stops: [0.0, 1.0],
                     begin: AlignmentDirectional(0.0, -1.0),
                     end: AlignmentDirectional(0, 1.0),
@@ -72,65 +84,139 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       mainAxisSize: MainAxisSize.max,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AuthUserStreamWidget(
-                                  builder: (context) => Text(
-                                    '${currentUserDisplayName}\' Profile',
+                        Expanded(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AuthUserStreamWidget(
+                                    builder: (context) => Text(
+                                      '${currentUserDisplayName}\' Profile',
+                                      style: FlutterFlowTheme.of(context)
+                                          .headlineMedium
+                                          .override(
+                                            fontFamily: 'Inter Tight',
+                                            color: Colors.white,
+                                            fontSize: 18.0,
+                                            letterSpacing: 0.0,
+                                          ),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Manage your personal information',
                                     style: FlutterFlowTheme.of(context)
-                                        .headlineMedium
+                                        .bodyMedium
                                         .override(
-                                          fontFamily: 'Inter Tight',
+                                          fontFamily: 'Inter',
                                           color: Colors.white,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
-                                ),
-                                Text(
-                                  'Manage your personal information',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        fontFamily: 'Inter',
-                                        color: Colors.white,
-                                        letterSpacing: 0.0,
-                                      ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              width: 60.0,
-                              height: 60.0,
-                              decoration: BoxDecoration(
-                                color: Color(0x33FFFFFF),
-                                borderRadius: BorderRadius.circular(30.0),
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2.0,
-                                ),
+                                ],
                               ),
-                              child: AuthUserStreamWidget(
-                                builder: (context) => ClipRRect(
+                              Container(
+                                width: 60.0,
+                                height: 60.0,
+                                decoration: BoxDecoration(
+                                  color: Color(0x33FFFFFF),
                                   borderRadius: BorderRadius.circular(30.0),
-                                  child: Image.network(
-                                    currentUserPhoto != null &&
-                                            currentUserPhoto != ''
-                                        ? currentUserPhoto
-                                        : 'https://images.unsplash.com/photo-1502877828070-33b167ad6860?w=500&h=500',
-                                    width: 60.0,
-                                    height: 60.0,
-                                    fit: BoxFit.cover,
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: AuthUserStreamWidget(
+                                  builder: (context) => InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      final selectedMedia =
+                                          await selectMediaWithSourceBottomSheet(
+                                        context: context,
+                                        maxWidth: 300.00,
+                                        maxHeight: 300.00,
+                                        allowPhoto: true,
+                                      );
+                                      if (selectedMedia != null &&
+                                          selectedMedia.every((m) =>
+                                              validateFileFormat(
+                                                  m.storagePath, context))) {
+                                        safeSetState(() =>
+                                            _model.isDataUploading = true);
+                                        var selectedUploadedFiles =
+                                            <FFUploadedFile>[];
+
+                                        var downloadUrls = <String>[];
+                                        try {
+                                          selectedUploadedFiles = selectedMedia
+                                              .map((m) => FFUploadedFile(
+                                                    name: m.storagePath
+                                                        .split('/')
+                                                        .last,
+                                                    bytes: m.bytes,
+                                                    height:
+                                                        m.dimensions?.height,
+                                                    width: m.dimensions?.width,
+                                                    blurHash: m.blurHash,
+                                                  ))
+                                              .toList();
+
+                                          downloadUrls = (await Future.wait(
+                                            selectedMedia.map(
+                                              (m) async => await uploadData(
+                                                  m.storagePath, m.bytes),
+                                            ),
+                                          ))
+                                              .where((u) => u != null)
+                                              .map((u) => u!)
+                                              .toList();
+                                        } finally {
+                                          _model.isDataUploading = false;
+                                        }
+                                        if (selectedUploadedFiles.length ==
+                                                selectedMedia.length &&
+                                            downloadUrls.length ==
+                                                selectedMedia.length) {
+                                          safeSetState(() {
+                                            _model.uploadedLocalFile =
+                                                selectedUploadedFiles.first;
+                                            _model.uploadedFileUrl =
+                                                downloadUrls.first;
+                                          });
+                                        } else {
+                                          safeSetState(() {});
+                                          return;
+                                        }
+                                      }
+
+                                      await currentUserReference!
+                                          .update(createUsersRecordData(
+                                        photoUrl: _model.uploadedFileUrl,
+                                      ));
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(30.0),
+                                      child: Image.network(
+                                        currentUserPhoto != null &&
+                                                currentUserPhoto != ''
+                                            ? currentUserPhoto
+                                            : 'https://images.unsplash.com/photo-1502877828070-33b167ad6860?w=500&h=500',
+                                        width: 60.0,
+                                        height: 60.0,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Material(
                           color: Colors.transparent,
@@ -159,118 +245,132 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Next Period',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryText,
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                          AuthUserStreamWidget(
-                                            builder: (context) => Text(
-                                              functions.calculateNextPeriodText(
-                                                  currentUserDocument!
-                                                      .periodStartDate!,
-                                                  valueOrDefault(
-                                                      currentUserDocument
-                                                          ?.cycleLength,
-                                                      0),
-                                                  getCurrentTimestamp),
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .titleLarge
-                                                  .override(
-                                                    fontFamily: 'Inter Tight',
-                                                    color: Color(0xFFFF69B4),
-                                                    letterSpacing: 0.0,
-                                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Period',
+                                              style:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .secondaryText,
+                                                        letterSpacing: 0.0,
+                                                      ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Period Days',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryText,
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                          AuthUserStreamWidget(
-                                            builder: (context) => Text(
-                                              '${valueOrDefault(currentUserDocument?.periodLength, 0).toString()}Days',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .titleLarge
-                                                  .override(
-                                                    fontFamily: 'Inter Tight',
-                                                    color: Color(0xFFFF69B4),
-                                                    letterSpacing: 0.0,
-                                                  ),
+                                            AuthUserStreamWidget(
+                                              builder: (context) => Text(
+                                                functions
+                                                    .calculateNextPeriodText(
+                                                        currentUserDocument!
+                                                            .periodStartDate!,
+                                                        valueOrDefault(
+                                                            currentUserDocument
+                                                                ?.cycleLength,
+                                                            0),
+                                                        getCurrentTimestamp),
+                                                style: FlutterFlowTheme.of(
+                                                        context)
+                                                    .titleLarge
+                                                    .override(
+                                                      fontFamily: 'Inter Tight',
+                                                      color: Color(0xFFFF69B4),
+                                                      fontSize: 16.0,
+                                                      letterSpacing: 0.0,
+                                                    ),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                      Column(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Cycle Length',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .secondaryText,
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                          AuthUserStreamWidget(
-                                            builder: (context) => Text(
-                                              '${valueOrDefault(currentUserDocument?.periodLength, 0).toString()} Days',
-                                              style: FlutterFlowTheme.of(
-                                                      context)
-                                                  .titleLarge
-                                                  .override(
-                                                    fontFamily: 'Inter Tight',
-                                                    color: Color(0xFFFF69B4),
-                                                    letterSpacing: 0.0,
-                                                  ),
+                                          ],
+                                        ),
+                                        Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              ' Days',
+                                              style:
+                                                  FlutterFlowTheme.of(context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .secondaryText,
+                                                        letterSpacing: 0.0,
+                                                      ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                            AuthUserStreamWidget(
+                                              builder: (context) => Text(
+                                                '${valueOrDefault(currentUserDocument?.periodLength, 0).toString()} Days',
+                                                style: FlutterFlowTheme.of(
+                                                        context)
+                                                    .titleLarge
+                                                    .override(
+                                                      fontFamily: 'Inter Tight',
+                                                      color: Color(0xFFFF69B4),
+                                                      fontSize: 16.0,
+                                                      letterSpacing: 0.0,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          mainAxisSize: MainAxisSize.max,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                'Cycle',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          color: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .secondaryText,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
+                                            ),
+                                            AuthUserStreamWidget(
+                                              builder: (context) => Text(
+                                                '${valueOrDefault(currentUserDocument?.cycleLength, 0).toString()} Days',
+                                                style: FlutterFlowTheme.of(
+                                                        context)
+                                                    .titleLarge
+                                                    .override(
+                                                      fontFamily: 'Inter Tight',
+                                                      color: Color(0xFFFF69B4),
+                                                      fontSize: 16.0,
+                                                      letterSpacing: 0.0,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ].divide(SizedBox(width: 10.0)),
+                                    ),
                                   ),
                                 ].divide(SizedBox(height: 16.0)),
                               ),
@@ -310,13 +410,48 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                               color:
                                                   FlutterFlowTheme.of(context)
                                                       .primaryText,
+                                              fontSize: 18.0,
                                               letterSpacing: 0.0,
                                             ),
                                       ),
-                                      Icon(
-                                        Icons.edit,
-                                        color: Color(0xFFFF69B4),
-                                        size: 24.0,
+                                      InkWell(
+                                        splashColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onTap: () async {
+                                          await showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            context: context,
+                                            builder: (context) {
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  FocusManager
+                                                      .instance.primaryFocus
+                                                      ?.unfocus();
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      MediaQuery.viewInsetsOf(
+                                                          context),
+                                                  child: Container(
+                                                    height: 400.0,
+                                                    child: PersonalWidget(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ).then(
+                                              (value) => safeSetState(() {}));
+                                        },
+                                        child: Icon(
+                                          Icons.edit,
+                                          color: Color(0xFFFF69B4),
+                                          size: 24.0,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -448,13 +583,49 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                               color:
                                                   FlutterFlowTheme.of(context)
                                                       .primaryText,
+                                              fontSize: 18.0,
                                               letterSpacing: 0.0,
                                             ),
                                       ),
-                                      Icon(
-                                        Icons.edit,
-                                        color: Color(0xFFFF69B4),
-                                        size: 24.0,
+                                      InkWell(
+                                        splashColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onTap: () async {
+                                          await showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            context: context,
+                                            builder: (context) {
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  FocusManager
+                                                      .instance.primaryFocus
+                                                      ?.unfocus();
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      MediaQuery.viewInsetsOf(
+                                                          context),
+                                                  child: Container(
+                                                    height: 400.0,
+                                                    child:
+                                                        HealthConditionsWidget(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ).then(
+                                              (value) => safeSetState(() {}));
+                                        },
+                                        child: Icon(
+                                          Icons.edit,
+                                          color: Color(0xFFFF69B4),
+                                          size: 24.0,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -471,7 +642,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: Color(0xFFFFF0F5),
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                           borderRadius:
                                               BorderRadius.circular(20.0),
                                         ),
@@ -537,13 +709,49 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                               color:
                                                   FlutterFlowTheme.of(context)
                                                       .primaryText,
+                                              fontSize: 18.0,
                                               letterSpacing: 0.0,
                                             ),
                                       ),
-                                      Icon(
-                                        Icons.edit,
-                                        color: Color(0xFFFF69B4),
-                                        size: 24.0,
+                                      InkWell(
+                                        splashColor: Colors.transparent,
+                                        focusColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        onTap: () async {
+                                          await showModalBottomSheet(
+                                            isScrollControlled: true,
+                                            backgroundColor: Colors.transparent,
+                                            context: context,
+                                            builder: (context) {
+                                              return GestureDetector(
+                                                onTap: () {
+                                                  FocusScope.of(context)
+                                                      .unfocus();
+                                                  FocusManager
+                                                      .instance.primaryFocus
+                                                      ?.unfocus();
+                                                },
+                                                child: Padding(
+                                                  padding:
+                                                      MediaQuery.viewInsetsOf(
+                                                          context),
+                                                  child: Container(
+                                                    height: 400.0,
+                                                    child:
+                                                        LifestyleHabitsWidget(),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ).then(
+                                              (value) => safeSetState(() {}));
+                                        },
+                                        child: Icon(
+                                          Icons.edit,
+                                          color: Color(0xFFFF69B4),
+                                          size: 24.0,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -560,7 +768,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                     children: [
                                       Container(
                                         decoration: BoxDecoration(
-                                          color: Color(0xFFFFF0F5),
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                           borderRadius:
                                               BorderRadius.circular(20.0),
                                         ),
@@ -612,6 +821,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                   24.0, 24.0, 24.0, 24.0),
                               child: Column(
                                 mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     'App Settings',
@@ -621,6 +831,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),

@@ -4,6 +4,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,7 @@ import 'perioddate_model.dart';
 export 'perioddate_model.dart';
 
 class PerioddateWidget extends StatefulWidget {
-  /// create a componete for adding period data in my period tracking app add
-  /// period length period start and cycle length, use good UI/UX
+  /// Period componant
   const PerioddateWidget({super.key});
 
   @override
@@ -34,6 +34,8 @@ class _PerioddateWidgetState extends State<PerioddateWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => PerioddateModel());
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override

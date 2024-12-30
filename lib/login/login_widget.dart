@@ -2,6 +2,7 @@ import '/auth/firebase_auth/auth_util.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,8 @@ class _LoginWidgetState extends State<LoginWidget> {
 
     _model.passwordTextController ??= TextEditingController();
     _model.textFieldFocusNode2 ??= FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -81,8 +84,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                           padding: EdgeInsetsDirectional.fromSTEB(
                               48.0, 0.0, 48.0, 0.0),
                           child: Container(
-                            child: Image.network(
-                              'https://images.unsplash.com/photo-1620288627223-53302f4e8c74?w=500&h=500',
+                            child: Image.asset(
+                              'assets/images/Blue_Minimalist_B_letter_Business_Company_Logo_(1).png',
                               width: 150.0,
                               height: 150.0,
                               fit: BoxFit.contain,
@@ -118,6 +121,20 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     ),
                               ),
                             ].divide(SizedBox(height: 12.0)),
+                          ),
+                        ),
+                        AuthUserStreamWidget(
+                          builder: (context) => Text(
+                            valueOrDefault<String>(
+                              currentUserDisplayName,
+                              'name',
+                            ),
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Inter',
+                                  letterSpacing: 0.0,
+                                ),
                           ),
                         ),
                         Padding(

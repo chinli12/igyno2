@@ -4,6 +4,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -12,7 +13,7 @@ import 'register_model.dart';
 export 'register_model.dart';
 
 class RegisterWidget extends StatefulWidget {
-  /// create a Registration page for my period tracking app, use good UI/UX
+  ///  Registration page for my period tracking app, use good UI/UX
   const RegisterWidget({super.key});
 
   @override
@@ -40,6 +41,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
 
     _model.pass2TextController ??= TextEditingController();
     _model.pass2FocusNode ??= FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
 
   @override
@@ -446,7 +449,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                                       width: MediaQuery.sizeOf(context).width *
                                           1.0,
                                       decoration: BoxDecoration(
-                                        color: Color(0xFFFFF0F7),
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryBackground,
                                         borderRadius:
                                             BorderRadius.circular(12.0),
                                       ),

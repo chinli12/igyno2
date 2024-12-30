@@ -1,7 +1,7 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/flutter_flow/flutter_flow_calendar.dart';
 import '/flutter_flow/flutter_flow_choice_chips.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -17,6 +17,8 @@ import 'package:provider/provider.dart';
 class TrackModel extends FlutterFlowModel<TrackWidget> {
   ///  State fields for stateful widgets in this page.
 
+  // State field(s) for Calendar widget.
+  DateTimeRange? calendarSelectedDay;
   // State field(s) for PeriodFlow widget.
   FormFieldController<List<String>>? periodFlowValueController;
   String? get periodFlowValue => periodFlowValueController?.value?.firstOrNull;
@@ -75,7 +77,12 @@ class TrackModel extends FlutterFlowModel<TrackWidget> {
   UserAnalyRecord? useranaly;
 
   @override
-  void initState(BuildContext context) {}
+  void initState(BuildContext context) {
+    calendarSelectedDay = DateTimeRange(
+      start: DateTime.now().startOfDay,
+      end: DateTime.now().endOfDay,
+    );
+  }
 
   @override
   void dispose() {

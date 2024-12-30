@@ -22,6 +22,8 @@ export 'serialization_util.dart';
 
 const kTransitionInfoKey = '__transition_info__';
 
+GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
+
 class AppStateNotifier extends ChangeNotifier {
   AppStateNotifier._();
 
@@ -79,6 +81,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
       initialLocation: '/',
       debugLogDiagnostics: true,
       refreshListenable: appStateNotifier,
+      navigatorKey: appNavigatorKey,
       errorBuilder: (context, state) =>
           appStateNotifier.loggedIn ? NavBarPage() : RegisterWidget(),
       routes: [
@@ -97,7 +100,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         ),
         FFRoute(
           name: 'Calenda',
-          path: '/calenda',
+          path: '/calendar',
           builder: (context, params) => params.isEmpty
               ? NavBarPage(initialPage: 'Calenda')
               : CalendaWidget(),
@@ -105,8 +108,14 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'Track',
           path: '/track',
-          builder: (context, params) =>
-              params.isEmpty ? NavBarPage(initialPage: 'Track') : TrackWidget(),
+          builder: (context, params) => params.isEmpty
+              ? NavBarPage(initialPage: 'Track')
+              : TrackWidget(
+                  day: params.getParam(
+                    'day',
+                    ParamType.DateTime,
+                  ),
+                ),
         ),
         FFRoute(
           name: 'Register',
@@ -140,6 +149,21 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => params.isEmpty
               ? NavBarPage(initialPage: 'profile')
               : ProfileWidget(),
+        ),
+        FFRoute(
+          name: 'videocal',
+          path: '/videocal',
+          builder: (context, params) => VideocalWidget(),
+        ),
+        FFRoute(
+          name: 'onb',
+          path: '/onb',
+          builder: (context, params) => OnbWidget(),
+        ),
+        FFRoute(
+          name: 'deleteaccount',
+          path: '/deleteaccount',
+          builder: (context, params) => DeleteaccountWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -326,15 +350,11 @@ class FFRoute {
                 )
               : builder(context, ffParams);
           final child = appStateNotifier.loading
-              ? Center(
-                  child: SizedBox(
-                    width: 50.0,
-                    height: 50.0,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        FlutterFlowTheme.of(context).primary,
-                      ),
-                    ),
+              ? Container(
+                  color: Colors.transparent,
+                  child: Image.asset(
+                    'assets/images/Blue_Minimalist_B_letter_Business_Company_Logo.png',
+                    fit: BoxFit.cover,
                   ),
                 )
               : page;

@@ -1,7 +1,7 @@
 import '/auth/firebase_auth/auth_util.dart';
 import '/backend/backend.dart';
+import '/flutter_flow/flutter_flow_calendar.dart';
 import '/flutter_flow/flutter_flow_choice_chips.dart';
-import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -16,7 +16,12 @@ import 'track_model.dart';
 export 'track_model.dart';
 
 class TrackWidget extends StatefulWidget {
-  const TrackWidget({super.key});
+  const TrackWidget({
+    super.key,
+    this.day,
+  });
+
+  final DateTime? day;
 
   @override
   State<TrackWidget> createState() => _TrackWidgetState();
@@ -76,7 +81,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                 ),
                 child: Padding(
                   padding:
-                      EdgeInsetsDirectional.fromSTEB(24.0, 35.0, 24.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(24.0, 35.0, 24.0, 25.0),
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -119,17 +124,71 @@ class _TrackWidgetState extends State<TrackWidget> {
                                 color: Color(0x33FFFFFF),
                                 borderRadius: BorderRadius.circular(25.0),
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(25.0),
-                                child: Image.network(
-                                  'https://images.unsplash.com/photo-1520658598005-4e731caf07de?w=500&h=500',
-                                  width: 50.0,
-                                  height: 50.0,
-                                  fit: BoxFit.cover,
+                              child: AuthUserStreamWidget(
+                                builder: (context) => ClipRRect(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  child: Image.network(
+                                    currentUserPhoto != null &&
+                                            currentUserPhoto != ''
+                                        ? currentUserPhoto
+                                        : 'https://images.unsplash.com/photo-1531369555007-dc0d507ee53f?w=500&h=500',
+                                    width: 50.0,
+                                    height: 50.0,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
                           ],
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme.of(context)
+                                .secondaryBackground,
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: FlutterFlowCalendar(
+                            color: FlutterFlowTheme.of(context).primary,
+                            iconColor:
+                                FlutterFlowTheme.of(context).secondaryText,
+                            weekFormat: true,
+                            weekStartsMonday: false,
+                            initialDate: widget!.day,
+                            rowHeight: 48.0,
+                            onChange: (DateTimeRange? newSelectedDate) {
+                              safeSetState(() =>
+                                  _model.calendarSelectedDay = newSelectedDate);
+                            },
+                            titleStyle: FlutterFlowTheme.of(context)
+                                .titleLarge
+                                .override(
+                                  fontFamily: 'Inter Tight',
+                                  letterSpacing: 0.0,
+                                ),
+                            dayOfWeekStyle:
+                                FlutterFlowTheme.of(context).bodyLarge.override(
+                                      fontFamily: 'Inter',
+                                      letterSpacing: 0.0,
+                                    ),
+                            dateStyle: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Inter',
+                                  letterSpacing: 0.0,
+                                ),
+                            selectedDateStyle: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .override(
+                                  fontFamily: 'Inter Tight',
+                                  letterSpacing: 0.0,
+                                ),
+                            inactiveDateStyle: FlutterFlowTheme.of(context)
+                                .labelMedium
+                                .override(
+                                  fontFamily: 'Inter',
+                                  letterSpacing: 0.0,
+                                ),
+                          ),
                         ),
                         Material(
                           color: Colors.transparent,
@@ -158,6 +217,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -187,7 +247,9 @@ class _TrackWidgetState extends State<TrackWidget> {
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     unselectedChipStyle: ChipStyle(
-                                      backgroundColor: Color(0xFFFFF0F5),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
                                           .bodySmall
                                           .override(
@@ -244,6 +306,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -271,7 +334,9 @@ class _TrackWidgetState extends State<TrackWidget> {
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     unselectedChipStyle: ChipStyle(
-                                      backgroundColor: Color(0xFFFFF0F5),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
                                           .bodySmall
                                           .override(
@@ -328,6 +393,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -366,7 +432,9 @@ class _TrackWidgetState extends State<TrackWidget> {
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     unselectedChipStyle: ChipStyle(
-                                      backgroundColor: Color(0xFFFFF0F5),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
                                           .bodySmall
                                           .override(
@@ -423,6 +491,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -456,7 +525,9 @@ class _TrackWidgetState extends State<TrackWidget> {
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     unselectedChipStyle: ChipStyle(
-                                      backgroundColor: Color(0xFFFFF0F5),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
                                           .bodySmall
                                           .override(
@@ -513,6 +584,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -549,7 +621,9 @@ class _TrackWidgetState extends State<TrackWidget> {
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     unselectedChipStyle: ChipStyle(
-                                      backgroundColor: Color(0xFFFFF0F5),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
                                           .bodySmall
                                           .override(
@@ -606,6 +680,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -636,7 +711,9 @@ class _TrackWidgetState extends State<TrackWidget> {
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     unselectedChipStyle: ChipStyle(
-                                      backgroundColor: Color(0xFFFFF0F5),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
                                           .bodySmall
                                           .override(
@@ -693,6 +770,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -775,6 +853,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -804,7 +883,9 @@ class _TrackWidgetState extends State<TrackWidget> {
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     unselectedChipStyle: ChipStyle(
-                                      backgroundColor: Color(0xFFFFF0F5),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
                                           .bodySmall
                                           .override(
@@ -861,6 +942,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -892,7 +974,9 @@ class _TrackWidgetState extends State<TrackWidget> {
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     unselectedChipStyle: ChipStyle(
-                                      backgroundColor: Color(0xFFFFF0F5),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
                                           .bodySmall
                                           .override(
@@ -949,6 +1033,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -979,7 +1064,9 @@ class _TrackWidgetState extends State<TrackWidget> {
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     unselectedChipStyle: ChipStyle(
-                                      backgroundColor: Color(0xFFFFF0F5),
+                                      backgroundColor:
+                                          FlutterFlowTheme.of(context)
+                                              .primaryBackground,
                                       textStyle: FlutterFlowTheme.of(context)
                                           .bodySmall
                                           .override(
@@ -1036,6 +1123,7 @@ class _TrackWidgetState extends State<TrackWidget> {
                                           fontFamily: 'Inter Tight',
                                           color: FlutterFlowTheme.of(context)
                                               .primaryText,
+                                          fontSize: 18.0,
                                           letterSpacing: 0.0,
                                         ),
                                   ),
@@ -1162,38 +1250,6 @@ class _TrackWidgetState extends State<TrackWidget> {
                           ),
                         ),
                       ].divide(SizedBox(height: 24.0)),
-                    ),
-                  ),
-                ),
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(0.0),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: 2.0,
-                    sigmaY: 2.0,
-                  ),
-                  child: Padding(
-                    padding:
-                        EdgeInsetsDirectional.fromSTEB(24.0, 48.0, 24.0, 24.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        FlutterFlowIconButton(
-                          borderRadius: 20.0,
-                          buttonSize: 40.0,
-                          fillColor: Color(0x33FFFFFF),
-                          icon: Icon(
-                            Icons.calendar_today,
-                            color: Colors.white,
-                            size: 24.0,
-                          ),
-                          onPressed: () {
-                            print('IconButton pressed ...');
-                          },
-                        ),
-                      ],
                     ),
                   ),
                 ),

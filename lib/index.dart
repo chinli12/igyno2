@@ -8,3 +8,6 @@ export '/login/login_widget.dart' show LoginWidget;
 export '/analy/analy_widget.dart' show AnalyWidget;
 export '/aichat/aichat_widget.dart' show AichatWidget;
 export '/profile/profile_widget.dart' show ProfileWidget;
+export '/videocal/videocal_widget.dart' show VideocalWidget;
+export '/onb/onb_widget.dart' show OnbWidget;
+export '/deleteaccount/deleteaccount_widget.dart' show DeleteaccountWidget;
